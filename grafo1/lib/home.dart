@@ -10,8 +10,6 @@ class Myhome extends StatefulWidget {
 }
 
 class _MyhomeState extends State<Myhome> {
-  //Valor de la linea
-  int valueLinea=0;
   //Variable que recibe el valor de los mensajes
   TextEditingController receptorMensaje = TextEditingController();
   /*Variable para controlar el modo:
@@ -133,22 +131,34 @@ class _MyhomeState extends State<Myhome> {
                     //Si la posición final cae en un nodo, entramos al if
                     if(xf<(e.x+e.radio)&&xf>(e.x-e.radio)&&yf<(e.y+e.radio)&&yf>(e.y-e.radio))
                     {
-                      //Verifica si ya hubo una conexión entre los dos nodos
+
                       if(e==nodoAux)
                       {
-                        _showDialog2(context);
+                        if(verificaConexion(e))
+                        {
+                          _showDialogCambio(context,e,lineaAux);
+                        }
+                        else
+                        {
+                          _showDialog2(context);
+                        }
+
                       }
+                      //Verifica si ya hubo una conexión entre los dos nodos
                       else if(verificaConexion(e))
                       {
                         //Si ya hubo una conexión vacía el receptor de mensaje
                         receptorMensaje.clear();
                         //Muestra una alerta para pedir el nuevo número que será asignado a la conexión
-                        _showDialogCambio(context,e,lineaAux);
+                        _showDialogCambio2(context,e,lineaAux);
                       }
                       else
                       {
                         //Muestra una alerta para pedir el número que será asignado a la conexión
-                        _showDialog(context,e);
+
+                        setState(() {
+                          _showDialog(context,e);
+                        });
                       }
                     }
                   });
@@ -334,23 +344,26 @@ class _MyhomeState extends State<Myhome> {
   List<List<int>> generaMatriz(List<List<int>> matrizAdyacencia)
   {
     matrizAdyacencia.clear();
-    List<int> v=[];
-
+    List<int> v2=[];
+    v2.add(0);
+    vNodo.forEach((ele) {v2.add(int.parse(ele.nombre));});
+    matrizAdyacencia.add(v2);
     for(int i=0;i<vNodo.length;i++)
     {
+      List<int> v=[];
       v.clear();
+      int vr=v2[i+1];
+      v.add(vr);
       for(int r=0;r<vNodo.length;r++)
       {
         v.add(0);
       }
       matrizAdyacencia.add(v);
     }
-
     vLineas.forEach((linea){
       print('Fila= '+linea.Ni.nombre + " Columna=" +linea.Nf.nombre + " valor=" +linea.valor +" tipo="+linea.tipo.toString());
-
-      int f=int.parse(linea.Ni.nombre)-1;
-      int c=int.parse(linea.Nf.nombre)-1;
+      int f=int.parse(linea.Ni.nombre);
+      int c=int.parse(linea.Nf.nombre);
       int valorLinea=int.parse(linea.valor);
       if(linea.tipo==0)
       {
@@ -364,7 +377,6 @@ class _MyhomeState extends State<Myhome> {
       fila[c]=valorLinea;
       matrizAdyacencia[f]=fila;
     });
-
     return matrizAdyacencia;
   }
 //Función eliminar lineas, llamada por la función _showDialogEliminar
@@ -434,6 +446,7 @@ class _MyhomeState extends State<Myhome> {
         });
   }
   //Mensaje de alerta para la Unir dos nodos
+  int? _valueLinea;
   _showDialog(context, ModeloNodo e)
   {
     showDialog(
@@ -441,83 +454,91 @@ class _MyhomeState extends State<Myhome> {
         //No puede ser salteado
         barrierDismissible: false,
         builder: (context){
-          return AlertDialog(
-            //Titulo del mensaje
-            title: Text("INTRODUZCA UN VALOR"),
-            //TextField para recibir un valor
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  //Teclado solo tenga numeros
-                  keyboardType: TextInputType.number,
-                  //valor numerico almacenado en receptorMensaje
-                  controller: receptorMensaje,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(e.nombre),
-                    DropdownButton(
-                    items: const [
-                      DropdownMenuItem(value: 0,child: Text('----'),),
-                      DropdownMenuItem(value: 1,child: Text('<---'),),
-                      DropdownMenuItem(value: 2,child: Text('--->'),),
+          return StatefulBuilder(
+              builder: (context,newsetState){
+                return AlertDialog(
+                  //Titulo del mensaje
+                  title: Text("INTRODUZCA UN VALOR"),
+                  //TextField para recibir un valor
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        //Teclado solo tenga numeros
+                        keyboardType: TextInputType.number,
+                        //valor numerico almacenado en receptorMensaje
+                        controller: receptorMensaje,
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(e.nombre),
+                            DropdownButton(
+                              items: const [
+                                DropdownMenuItem(value: 0,child: Text('----'),),
+                                DropdownMenuItem(value: 1,child: Text('<---'),),
+                                DropdownMenuItem(value: 2,child: Text('--->'),),
+                              ],
+
+                              value: _valueLinea,
+                              onChanged: (value) {
+                                newsetState(() {
+                                  _valueLinea=value;
+                                  print(_valueLinea);
+                                });
+                                setState(() {
+
+                                });
+                              },
+                            ),
+                            Text(nodoAux.nombre),]
+                      ),
                     ],
-
-                    value: valueLinea,
-                    onChanged: (value) {
-                      setState(() {
-                        valueLinea=value!;
-                      });
-                    },
                   ),
-                    Text(nodoAux.nombre),]
-                ),
-              ],
-            ),
 
 
-            actions: [
-              //Confirma la unión de nodos
-              TextButton(
-                  onPressed: (){
-                    //crea una nueva Linea entre los nodos
-                    if(valueLinea==2)
-                    {
-                      ModeloLinea h=ModeloLinea(e,nodoAux,receptorMensaje.text,1);
-                      vLineas.add(h);
-                    }
-                    else
-                    {
-                      ModeloLinea h=ModeloLinea(nodoAux,e,receptorMensaje.text,valueLinea);
-                      vLineas.add(h);
-                    }
-                    //Cambia el color del nodo inicial a azul
-                    e.color=false;
-                    setState(() {
-                    });
-                    //sale del mensaje
-                    Navigator.of(context).pop();
-                  },
-                  //texto del boton
-                  child: Text("OK")
-              ),
-              //cancela la unión de nodos
-              TextButton(
-                  onPressed: (){
-                    //Cambia el color del nodo inicial a azul
-                    e.color=false;
-                    setState(() {
-                    });
-                    //sale del mensaje
-                    Navigator.of(context).pop();
-                  },
-                  //texto del boton
-                  child: Text("Cancel")
-              ),
-            ],
-          );
+                  actions: [
+                    //Confirma la unión de nodos
+                    TextButton(
+                        onPressed: (){
+                          //crea una nueva Linea entre los nodos
+                          if(_valueLinea==2)
+                          {
+                            ModeloLinea h=ModeloLinea(e,nodoAux,receptorMensaje.text,1);
+                            vLineas.add(h);
+                          }
+                          else
+                          {
+                            ModeloLinea h=ModeloLinea(nodoAux,e,receptorMensaje.text,_valueLinea!);
+                            vLineas.add(h);
+                          }
+                          //Cambia el color del nodo inicial a azul
+                          e.color=false;
+
+                          //sale del mensaje
+                          Navigator.of(context).pop();
+                          setState(() {
+                          });
+                        },
+                        //texto del boton
+                        child: Text("OK")
+                    ),
+                    //cancela la unión de nodos
+                    TextButton(
+                        onPressed: (){
+                          //Cambia el color del nodo inicial a azul
+                          e.color=false;
+                          setState(() {
+                          });
+                          //sale del mensaje
+                          Navigator.of(context).pop();
+                        },
+                        //texto del boton
+                        child: Text("Cancel")
+                    ),
+                  ],
+                );
+              } );
         });
   }
   _showDialog2(context)
@@ -640,6 +661,96 @@ class _MyhomeState extends State<Myhome> {
               ),
             ],
           );
+        });
+  }
+  _showDialogCambio2(context, ModeloNodo e,ModeloLinea h)
+  {
+    showDialog(
+        context: context,
+        //El mensaje no se puede saltear
+        barrierDismissible: false,
+        builder: (context){
+          return StatefulBuilder(builder: (context,newsetState){
+            return AlertDialog(
+              //titulo del mensaje
+              title: Text("CAMBIE EL VALOR"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    //Teclado solo tenga numeros
+                    keyboardType: TextInputType.number,
+                    //valor numerico almacenado en receptorMensaje
+                    controller: receptorMensaje,
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(e.nombre),
+                        DropdownButton(
+                          items: const [
+                            DropdownMenuItem(value: 0,child: Text('----'),),
+                            DropdownMenuItem(value: 1,child: Text('<---'),),
+                            DropdownMenuItem(value: 2,child: Text('--->'),),
+                          ],
+
+                          value: _valueLinea,
+                          onChanged: (value) {
+                            newsetState(() {
+                              _valueLinea=value;
+                              print(_valueLinea);
+                            });
+                            setState(() {
+
+                            });
+                          },
+                        ),
+                        Text(nodoAux.nombre),]
+                  ),
+                ],
+              ),
+
+              actions: [
+                //Confirma el cambio
+                TextButton(
+                    onPressed: (){
+                      //cambia el valor de la conexión por el nuevo valor
+                      h.valor=receptorMensaje.text;
+                      if(_valueLinea==0)
+                      {
+                        h.tipo=_valueLinea!;
+                      }
+                      else if(_valueLinea==1)
+                      {
+                        h.Ni=nodoAux;
+                        h.Nf=e;
+                        h.tipo=1;
+                      }
+                      else {
+                        h.Nf=nodoAux;
+                        h.Ni=e;
+                        h.tipo=1;
+                      }
+                      e.color=false;
+                      setState(() {
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("OK")
+                ),
+                //cancela el cambio
+                TextButton(
+                    onPressed: (){
+                      e.color=false;
+                      setState(() {
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Cancel")
+                ),
+              ],
+            );
+          });
         });
   }
 }
