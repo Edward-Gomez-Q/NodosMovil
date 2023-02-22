@@ -68,6 +68,13 @@ class Lineas extends CustomPainter
     tp.layout();
     tp.paint(canvas, Offset(x,y));
   }
+  _msg2(double x, double y,  String msg, Canvas canvas){
+    TextSpan span = TextSpan(style: TextStyle(color: Colors.black,fontSize: 25, fontWeight:FontWeight.bold), text: msg);
+    TextPainter tp = TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
+
+    tp.layout();
+    tp.paint(canvas, Offset(x,(y - 110)));
+  }
   //configuramos la linea de color negro y grosor 4
   final linea = Paint()
     ..color = Colors.black
@@ -155,7 +162,7 @@ class Lineas extends CustomPainter
 
         canvas.drawPath(path, paint);
 
-        _msg((e.Ni.x + e.Nf.x) / 2, (e.Ni.y + e.Nf.y) / 2, e.valor.toString(), canvas);
+        _msg2((e.Ni.x + e.Nf.x) / 2, (e.Ni.y + e.Nf.y) / 2, e.valor.toString(), canvas);
 
       }
 

@@ -321,7 +321,7 @@ class _MyhomeState extends State<Myhome> {
               IconButton(onPressed: () {
                 setState(() {
                   //Matriz de Adyacencia
-                  List<List<String>> matrizAdyacencia=<List<String>>[];
+                  List<List<int>> matrizAdyacencia=[];
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => matriz(generaMatriz(matrizAdyacencia))));
                 });
               }, icon: Icon(Icons.table_view))
@@ -331,45 +331,38 @@ class _MyhomeState extends State<Myhome> {
       ),
     );
   }
-  List<List<String>> generaMatriz(List<List<String>> matrizAdyacencia)
+  List<List<int>> generaMatriz(List<List<int>> matrizAdyacencia)
   {
     matrizAdyacencia.clear();
-    List<String> v=[];
+    List<int> v=[];
+
     for(int i=0;i<vNodo.length;i++)
     {
       v.clear();
       for(int r=0;r<vNodo.length;r++)
       {
-        v.add('0');
+        v.add(0);
       }
       matrizAdyacencia.add(v);
     }
-    //flag:matriz cereada
 
     vLineas.forEach((linea){
-      //print(linea.Ni.nombre + " " +linea.Nf.nombre + " " +linea.valor +" "+linea.tipo.toString());
-      print(matrizAdyacencia);
+      print('Fila= '+linea.Ni.nombre + " Columna=" +linea.Nf.nombre + " valor=" +linea.valor +" tipo="+linea.tipo.toString());
+
       int f=int.parse(linea.Ni.nombre)-1;
       int c=int.parse(linea.Nf.nombre)-1;
+      int valorLinea=int.parse(linea.valor);
       if(linea.tipo==0)
       {
-        matrizAdyacencia[f][c]=linea.valor.toString();
-        print(matrizAdyacencia);
-        matrizAdyacencia[c][f]=linea.valor.toString();
+        List<int> fila=[...matrizAdyacencia[c]];
+        fila[f]=valorLinea;
+        matrizAdyacencia[c]=fila;
 
+        print(fila);
       }
-      else if(linea.tipo==1)
-      {
-        matrizAdyacencia[int.parse(linea.Ni.nombre)-1][int.parse(linea.Nf.nombre)-1]=linea.valor;
-      }
-      else if(linea.tipo==3)
-      {
-        matrizAdyacencia[int.parse(linea.Ni.nombre)-1][int.parse(linea.Nf.nombre)-1]=linea.valor;
-      }
-      //print(matrizAdyacencia[int.parse(linea.Ni.nombre)-1]);
-
-      //print(matrizAdyacencia[int.parse(linea.Ni.nombre)-1]);
-
+      List<int> fila=[...matrizAdyacencia[f]];
+      fila[c]=valorLinea;
+      matrizAdyacencia[f]=fila;
     });
 
     return matrizAdyacencia;
