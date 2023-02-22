@@ -80,8 +80,10 @@ class ModeloLinea{
   ModeloNodo _Ni,_Nf;
   //valor
   String _valor;
+  //Tipo
+  int tipo;
   //constructor
-  ModeloLinea(this._Ni, this._Nf, this._valor);
+  ModeloLinea(this._Ni, this._Nf, this._valor,this.tipo);
   //getters and setters
   String get valor => _valor;
 

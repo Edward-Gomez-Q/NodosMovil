@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'modelos.dart';
 import 'figura.dart';
+import 'matriz.dart';
 class Myhome extends StatefulWidget {
   const Myhome({Key? key}) : super(key: key);
   //Nos envía a _MyhomeState
@@ -9,6 +10,8 @@ class Myhome extends StatefulWidget {
 }
 
 class _MyhomeState extends State<Myhome> {
+  //Valor de la linea
+  int valueLinea=0;
   //Variable que recibe el valor de los mensajes
   TextEditingController receptorMensaje = TextEditingController();
   /*Variable para controlar el modo:
@@ -60,6 +63,7 @@ class _MyhomeState extends State<Myhome> {
             //Dibuja todas las lineas
             CustomPaint(
               painter: Lineas(vLineas),
+
             ),
             //Dibuja todos los Nodos
             CustomPaint(
@@ -130,8 +134,11 @@ class _MyhomeState extends State<Myhome> {
                     if(xf<(e.x+e.radio)&&xf>(e.x-e.radio)&&yf<(e.y+e.radio)&&yf>(e.y-e.radio))
                     {
                       //Verifica si ya hubo una conexión entre los dos nodos
-
-                      if(verificaConexion(e))
+                      if(e==nodoAux)
+                      {
+                        _showDialog2(context);
+                      }
+                      else if(verificaConexion(e))
                       {
                         //Si ya hubo una conexión vacía el receptor de mensaje
                         receptorMensaje.clear();
@@ -220,6 +227,7 @@ class _MyhomeState extends State<Myhome> {
                     vNodo.add(ModeloNodo(ubi.globalPosition.dx,ubi.globalPosition.dy,50,"$contadorNodos",false));
                     //el numero de nodos suber en 1
                     contadorNodos++;
+
                   }
                 });
               },
@@ -310,11 +318,61 @@ class _MyhomeState extends State<Myhome> {
                 icon: Icon(Icons.delete_forever),
                 tooltip: 'Vaciar',
               ),
+              IconButton(onPressed: () {
+                setState(() {
+                  //Matriz de Adyacencia
+                  List<List<String>> matrizAdyacencia=<List<String>>[];
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => matriz(generaMatriz(matrizAdyacencia))));
+                });
+              }, icon: Icon(Icons.table_view))
             ],
           ),
         ),
       ),
     );
+  }
+  List<List<String>> generaMatriz(List<List<String>> matrizAdyacencia)
+  {
+    matrizAdyacencia.clear();
+    List<String> v=[];
+    for(int i=0;i<vNodo.length;i++)
+    {
+      v.clear();
+      for(int r=0;r<vNodo.length;r++)
+      {
+        v.add('0');
+      }
+      matrizAdyacencia.add(v);
+    }
+    //flag:matriz cereada
+
+    vLineas.forEach((linea){
+      //print(linea.Ni.nombre + " " +linea.Nf.nombre + " " +linea.valor +" "+linea.tipo.toString());
+      print(matrizAdyacencia);
+      int f=int.parse(linea.Ni.nombre)-1;
+      int c=int.parse(linea.Nf.nombre)-1;
+      if(linea.tipo==0)
+      {
+        matrizAdyacencia[f][c]=linea.valor.toString();
+        print(matrizAdyacencia);
+        matrizAdyacencia[c][f]=linea.valor.toString();
+
+      }
+      else if(linea.tipo==1)
+      {
+        matrizAdyacencia[int.parse(linea.Ni.nombre)-1][int.parse(linea.Nf.nombre)-1]=linea.valor;
+      }
+      else if(linea.tipo==3)
+      {
+        matrizAdyacencia[int.parse(linea.Ni.nombre)-1][int.parse(linea.Nf.nombre)-1]=linea.valor;
+      }
+      //print(matrizAdyacencia[int.parse(linea.Ni.nombre)-1]);
+
+      //print(matrizAdyacencia[int.parse(linea.Ni.nombre)-1]);
+
+    });
+
+    return matrizAdyacencia;
   }
 //Función eliminar lineas, llamada por la función _showDialogEliminar
   void eliminarLineas(ModeloNodo e)
@@ -361,6 +419,7 @@ class _MyhomeState extends State<Myhome> {
                 eliminarLineas(e);
                 //elimina al nodo
                 vNodo.remove(e);
+
                 setState(() {
 
                 });
@@ -393,20 +452,54 @@ class _MyhomeState extends State<Myhome> {
             //Titulo del mensaje
             title: Text("INTRODUZCA UN VALOR"),
             //TextField para recibir un valor
-            content: TextField(
-              //Teclado solo tenga numeros
-              keyboardType: TextInputType.number,
-              //valor numerico almacenado en receptorMensaje
-              controller: receptorMensaje,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  //Teclado solo tenga numeros
+                  keyboardType: TextInputType.number,
+                  //valor numerico almacenado en receptorMensaje
+                  controller: receptorMensaje,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(e.nombre),
+                    DropdownButton(
+                    items: const [
+                      DropdownMenuItem(value: 0,child: Text('----'),),
+                      DropdownMenuItem(value: 1,child: Text('<---'),),
+                      DropdownMenuItem(value: 2,child: Text('--->'),),
+                    ],
+
+                    value: valueLinea,
+                    onChanged: (value) {
+                      setState(() {
+                        valueLinea=value!;
+                      });
+                    },
+                  ),
+                    Text(nodoAux.nombre),]
+                ),
+              ],
             ),
+
+
             actions: [
               //Confirma la unión de nodos
               TextButton(
                   onPressed: (){
                     //crea una nueva Linea entre los nodos
-                    ModeloLinea h=ModeloLinea(nodoAux,e,receptorMensaje.text);
-                    //Añade esa linea a la lista
-                    vLineas.add(h);
+                    if(valueLinea==2)
+                    {
+                      ModeloLinea h=ModeloLinea(e,nodoAux,receptorMensaje.text,1);
+                      vLineas.add(h);
+                    }
+                    else
+                    {
+                      ModeloLinea h=ModeloLinea(nodoAux,e,receptorMensaje.text,valueLinea);
+                      vLineas.add(h);
+                    }
                     //Cambia el color del nodo inicial a azul
                     e.color=false;
                     setState(() {
@@ -422,6 +515,62 @@ class _MyhomeState extends State<Myhome> {
                   onPressed: (){
                     //Cambia el color del nodo inicial a azul
                     e.color=false;
+                    setState(() {
+                    });
+                    //sale del mensaje
+                    Navigator.of(context).pop();
+                  },
+                  //texto del boton
+                  child: Text("Cancel")
+              ),
+            ],
+          );
+        });
+  }
+  _showDialog2(context)
+  {
+    showDialog(
+        context: context,
+        //No puede ser salteado
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            //Titulo del mensaje
+            title: Text("INTRODUZCA UN VALOR"),
+            //TextField para recibir un valor
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  //Teclado solo tenga numeros
+                  keyboardType: TextInputType.number,
+                  //valor numerico almacenado en receptorMensaje
+                  controller: receptorMensaje,
+                ),
+              ],
+            ),
+            actions: [
+              //Confirma la unión de nodos
+              TextButton(
+                  onPressed: (){
+                    //crea una nueva Linea entre los nodos
+                    ModeloLinea h=ModeloLinea(nodoAux,nodoAux,receptorMensaje.text,3);
+                    vLineas.add(h);
+                    //Cambia el color del nodo inicial a azul
+                    nodoAux.color=false;
+                    setState(() {
+                    });
+                    //sale del mensaje
+                    Navigator.of(context).pop();
+                  },
+                  //texto del boton
+                  child: Text("OK")
+              ),
+              //cancela la unión de nodos
+              TextButton(
+                  onPressed: (){
+                    //Cambia el color del nodo inicial a azul
+                    nodoAux.color=false;
                     setState(() {
                     });
                     //sale del mensaje
@@ -463,12 +612,16 @@ class _MyhomeState extends State<Myhome> {
           return AlertDialog(
             //titulo del mensaje
             title: Text("CAMBIE EL VALOR"),
-            content: TextField(
+            content:
+
+
+            TextField(
               //teclado solo con numeros
               keyboardType: TextInputType.number,
               //valor numerico almacenado en receptorMensaje
               controller: receptorMensaje,
             ),
+
             actions: [
               //Confirma el cambio
               TextButton(
