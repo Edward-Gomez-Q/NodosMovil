@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:grafo1/HelpScreen.dart';
 import 'modelos.dart';
 import 'figura.dart';
+import 'HelpScreen.dart';
 import 'matriz.dart';
 class Myhome extends StatefulWidget {
   const Myhome({Key? key}) : super(key: key);
@@ -264,78 +266,94 @@ class _MyhomeState extends State<Myhome> {
         ),
         //Barra de navegación ubicada al final
         bottomNavigationBar: BottomAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              //botón para poner el modo 1
-              IconButton(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                //botón para poner el modo 1
+                IconButton(
+                    onPressed: (){
+                      setState(() {
+                        modo=1;
+                        eliminarBoceto();
+                      });
+                    },
+                    icon: Icon(Icons.add),
+
+                    tooltip: 'Nuevo Nodo',
+                ),
+                //botón para poner el modo 2
+                IconButton(
                   onPressed: (){
                     setState(() {
-                      modo=1;
+                      modo=2;
                       eliminarBoceto();
                     });
                   },
-                  icon: Icon(Icons.add),
-
-                  tooltip: 'Nuevo Nodo',
-              ),
-              //botón para poner el modo 2
-              IconButton(
-                onPressed: (){
-                  setState(() {
-                    modo=2;
-                    eliminarBoceto();
-                  });
-                },
-                icon: Icon(Icons.flag),
-                tooltip: 'Unir Nodo',
-              ),
-              //botón para poner el modo 3
-              IconButton(
-                onPressed: (){
-                  setState(() {
-                    modo=3;
-                    eliminarBoceto();
-                  });
-                },
-                icon: Icon(Icons.delete),
-                tooltip: 'eliminar',
-              ),
-              //botón para poner el modo 4
-              IconButton(
-                onPressed: (){
-                  setState(() {
-                    modo=4;
-                    eliminarBoceto();
-                  });
-                },
-                icon: Icon(Icons.drive_file_move_rounded),
-                tooltip: 'Mover Nodo',
-              ),
-              //botón para restablecer todos los valores iniciales
-              IconButton(
-                onPressed: (){
-                  setState(() {
-                    modo=-1;
-                    vNodo.clear();
-                    contadorNodos=1;
-                    vLineas.clear();
+                  icon: Icon(Icons.flag),
+                  tooltip: 'Unir Nodo',
+                ),
+                //botón para poner el modo 3
+                IconButton(
+                  onPressed: (){
                     setState(() {
+                      modo=3;
                       eliminarBoceto();
                     });
+                  },
+                  icon: Icon(Icons.delete),
+                  tooltip: 'eliminar',
+                ),
+                //botón para poner el modo 4
+                IconButton(
+                  onPressed: (){
+                    setState(() {
+                      modo=4;
+                      eliminarBoceto();
+                    });
+                  },
+                  icon: Icon(Icons.drive_file_move_rounded),
+                  tooltip: 'Mover Nodo',
+                ),
+                //botón para restablecer todos los valores iniciales
+                IconButton(
+                  onPressed: (){
+                    setState(() {
+                      modo=-1;
+                      vNodo.clear();
+                      contadorNodos=1;
+                      vLineas.clear();
+                      setState(() {
+                        eliminarBoceto();
+                      });
+                    });
+                  },
+                  icon: Icon(Icons.delete_forever),
+                  tooltip: 'Vaciar',
+                ),
+                IconButton(onPressed: () {
+                  setState(() {
+                    //Matriz de Adyacencia
+                    List<List<int>> matrizAdyacencia=[];
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => matriz(generaMatriz(matrizAdyacencia))));
                   });
-                },
-                icon: Icon(Icons.delete_forever),
-                tooltip: 'Vaciar',
-              ),
-              IconButton(onPressed: () {
-                setState(() {
-                  //Matriz de Adyacencia
-                  List<List<int>> matrizAdyacencia=[];
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => matriz(generaMatriz(matrizAdyacencia))));
-                });
-              }, icon: Icon(Icons.table_view))
-            ],
+                }, icon: Icon(Icons.table_view),
+                  tooltip: 'Ver Tabla',
+                ),
+                IconButton(onPressed:() {
+                  setState(() {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HelpScreen()));
+                  });
+                }, icon: Icon(Icons.help)),
+                IconButton(onPressed:() {
+                  setState(() {
+
+                  });
+                }, icon: Icon(Icons.save),
+                tooltip: 'Guardar',),
+              ],
+            ),
           ),
         ),
       ),
