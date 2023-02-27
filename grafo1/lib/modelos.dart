@@ -12,6 +12,7 @@ class ModeloNodo
   bool _st;
   //constructor
   ModeloNodo(this._x, this._y, this._radio, this._nombre,this._st);
+  int id=0;
   //getters y setters
   String get nombre => _nombre;
 
@@ -81,10 +82,16 @@ class ModeloLinea{
   //valor
   String _valor;
   //Tipo
-  int tipo;
+  int _tipo;
   //constructor
-  ModeloLinea(this._Ni, this._Nf, this._valor,this.tipo);
+  ModeloLinea(this._Ni, this._Nf, this._valor,this._tipo);
+
   //getters and setters
+  int get tipo => _tipo;
+  set tipo(int value)
+  {
+    _tipo=value;
+  }
   String get valor => _valor;
 
   set valor(String value) {
@@ -103,3 +110,18 @@ class ModeloLinea{
     _Ni = value;
   }
 }
+class modelo{
+  int id;
+  String Nombre;
+  String Descripcion;
+  String Nodos;
+  String Lineas;
+  int cantidadNodos;
+  int cantidadLineas;
+  modelo(this.id,this.Nombre,this.Descripcion,this.Nodos,this.Lineas,this.cantidadNodos,this.cantidadLineas);
+  Map<String,dynamic> toMap(){
+    return{'id':id,'Nombre':Nombre,'Descripcion':Descripcion,'Nodos':Nodos,'Lineas':Lineas,'cantidadNodos':cantidadNodos,'cantidadLineas':cantidadLineas};
+  }
+
+}
+
