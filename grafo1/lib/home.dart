@@ -372,6 +372,17 @@ class _MyhomeState extends State<Myhome> {
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => HelpScreen()));
                   });
                 }, icon: Icon(Icons.help)),
+                IconButton(
+                  onPressed: (){
+                    setState(() {
+                      modo = 5;
+                      eliminarBoceto();
+
+                    });
+                  },
+                  icon: Icon(Icons.edit_outlined),
+                  tooltip: 'Editar',
+                ),
                 IconButton(onPressed:() {
                   setState(() {
                     cantN=0;
