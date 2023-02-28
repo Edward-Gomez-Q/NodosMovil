@@ -7,14 +7,21 @@ class ModeloNodo
   //posición y radio
   double _x,_y,_radio;
   //numero
-  String _nombre;
+  String _codigo;
   //valor de su color: rojo o azul
+  String _nombre;
+  //valor del nombre
   bool _st;
   //constructor
-  ModeloNodo(this._x, this._y, this._radio, this._nombre,this._st);
+  ModeloNodo(this._x, this._y, this._radio, this._codigo,this._nombre,this._st);
   int id=0;
   //getters y setters
+  String get codigo => _codigo;
   String get nombre => _nombre;
+
+  set codigo(String value) {
+    _codigo = value;
+  }
 
   set nombre(String value) {
     _nombre = value;
@@ -112,15 +119,15 @@ class ModeloLinea{
 }
 class modelo{
   int id;
-  String Nombre;
+  String Codigo;
   String Descripcion;
   String Nodos;
   String Lineas;
   int cantidadNodos;
   int cantidadLineas;
-  modelo(this.id,this.Nombre,this.Descripcion,this.Nodos,this.Lineas,this.cantidadNodos,this.cantidadLineas);
+  modelo(this.id,this.Codigo,this.Descripcion,this.Nodos,this.Lineas,this.cantidadNodos,this.cantidadLineas);
   Map<String,dynamic> toMap(){
-    return{'id':id,'Nombre':Nombre,'Descripcion':Descripcion,'Nodos':Nodos,'Lineas':Lineas,'cantidadNodos':cantidadNodos,'cantidadLineas':cantidadLineas};
+    return{'id':id,'Codigo':Codigo,'Descripcion':Descripcion,'Nodos':Nodos,'Lineas':Lineas,'cantidadNodos':cantidadNodos,'cantidadLineas':cantidadLineas};
   }
 
 }

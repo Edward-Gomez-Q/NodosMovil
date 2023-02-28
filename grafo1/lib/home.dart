@@ -43,7 +43,7 @@ class _MyhomeState extends State<Myhome> {
    */
   bool flagBoceto=false;
   //Variable Auxiliar que almacena un nodo
-  ModeloNodo nodoAux= new ModeloNodo(0,0,0,"", false);
+  ModeloNodo nodoAux= new ModeloNodo(0,0,0,"","", false);
   //Variable Auxiliar que almacena una Linea
   late ModeloLinea lineaAux;
   late int ID;
@@ -252,7 +252,7 @@ class _MyhomeState extends State<Myhome> {
                   if(modo==1)
                   {
                     //Añade un nuevo nodo a la lista de nodos con los datos de su posición y su número
-                    vNodo.add(ModeloNodo(ubi.globalPosition.dx,ubi.globalPosition.dy,50,"$contadorNodos",false));
+                    vNodo.add(ModeloNodo(ubi.globalPosition.dx,ubi.globalPosition.dy,50,"$contadorNodos","$contadorNodos",false));
                     //el numero de nodos suber en 1
                     contadorNodos++;
 
@@ -361,7 +361,7 @@ class _MyhomeState extends State<Myhome> {
                 IconButton(onPressed: () {
                   setState(() {
                     //Matriz de Adyacencia
-                    List<List<int>> matrizAdyacencia=[];
+                    List<List<String>> matrizAdyacencia=[];
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => matriz(generaMatriz(matrizAdyacencia))));
                   });
                 }, icon: Icon(Icons.table_view),
@@ -416,7 +416,7 @@ class _MyhomeState extends State<Myhome> {
     String cifrado="";
     vNodo.forEach((Nodo) {
       cantN++;
-      cifrado=cifrado+Nodo.x.toStringAsPrecision(7)+","+Nodo.y.toStringAsPrecision(7)+","+Nodo.radio.toString()+","+Nodo.nombre+","+Nodo.st.toString()+";";
+      cifrado=cifrado+Nodo.x.toStringAsPrecision(7)+","+Nodo.y.toStringAsPrecision(7)+","+Nodo.radio.toString()+","+Nodo.codigo+","+Nodo.st.toString()+";";
     });
     return cifrado;
   }
@@ -424,7 +424,7 @@ class _MyhomeState extends State<Myhome> {
     String cifrado="";
     vLineas.forEach((Linea) {
       cantL++;
-      cifrado=cifrado+Linea.Ni.nombre+","+Linea.Nf.nombre+","+Linea.valor+","+Linea.tipo.toString()+";";
+      cifrado=cifrado+Linea.Ni.codigo+","+Linea.Nf.codigo+","+Linea.valor+","+Linea.tipo.toString()+";";
     });
     return cifrado;
   }
@@ -434,7 +434,7 @@ class _MyhomeState extends State<Myhome> {
     for(int i=0;i<cifrado.cantidadNodos;i++)
     {
       List<String> Nodo=ListaNodos[i].split(",");
-      vNodo.add(ModeloNodo(double.parse(Nodo[0]), double.parse(Nodo[1]), double.parse(Nodo[2]),Nodo[3],false));
+      vNodo.add(ModeloNodo(double.parse(Nodo[0]), double.parse(Nodo[1]), double.parse(Nodo[2]),Nodo[3],Nodo[3],false));
     }
     vLineas.clear();
     List<String> ListaLineas=cifrado.Lineas.split(";");
@@ -445,11 +445,11 @@ class _MyhomeState extends State<Myhome> {
       ModeloNodo Nff=vNodo[0];
       List<String> Linea=ListaLineas[i].split(',');
       vNodo.forEach((Nodo) {
-        if(Nodo.nombre==Linea[0])
+        if(Nodo.codigo==Linea[0])
         {
           Nii=Nodo;
         }
-        if(Nodo.nombre==Linea[1])
+        if(Nodo.codigo==Linea[1])
         {
           Nff=Nodo;
         }
@@ -458,40 +458,40 @@ class _MyhomeState extends State<Myhome> {
     }
 
   }
-  List<List<int>> generaMatriz(List<List<int>> matrizAdyacencia)
+  List<List<String>> generaMatriz(List<List<String>> matrizAdyacencia)
   {
     matrizAdyacencia.clear();
-    List<int> v2=[];
-    v2.add(0);
-    vNodo.forEach((ele) {v2.add(int.parse(ele.nombre));});
+    List<String> v2=[];
+    v2.add(" ");
+    vNodo.forEach((ele) {v2.add((ele.nombre));});
     matrizAdyacencia.add(v2);
     for(int i=0;i<vNodo.length;i++)
     {
-      List<int> v=[];
+      List<String> v=[];
       v.clear();
-      int vr=v2[i+1];
+      String vr=v2[i+1];
       v.add(vr);
       for(int r=0;r<vNodo.length;r++)
       {
-        v.add(0);
+        v.add("0");
       }
       matrizAdyacencia.add(v);
     }
     vLineas.forEach((linea){
-      print('Fila= '+linea.Ni.nombre + " Columna=" +linea.Nf.nombre + " valor=" +linea.valor +" tipo="+linea.tipo.toString());
-      int f=int.parse(linea.Ni.nombre);
-      int c=int.parse(linea.Nf.nombre);
+      print('Fila= '+linea.Ni.codigo + " Columna=" +linea.Nf.codigo + " valor=" +linea.valor +" tipo="+linea.tipo.toString());
+      int f=int.parse(linea.Ni.codigo);
+      int c=int.parse(linea.Nf.codigo);
       int valorLinea=int.parse(linea.valor);
       if(linea.tipo==0)
       {
-        List<int> fila=[...matrizAdyacencia[c]];
-        fila[f]=valorLinea;
+        List<String> fila=[...matrizAdyacencia[c]];
+        fila[f]=valorLinea.toString();
         matrizAdyacencia[c]=fila;
 
         print(fila);
       }
-      List<int> fila=[...matrizAdyacencia[f]];
-      fila[c]=valorLinea;
+      List<String> fila=[...matrizAdyacencia[f]];
+      fila[c]=valorLinea.toString();
       matrizAdyacencia[f]=fila;
     });
     return matrizAdyacencia;
@@ -589,7 +589,7 @@ class _MyhomeState extends State<Myhome> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text(e.nombre),
+                            Text(e.codigo),
                             DropdownButton(
                               items: const [
                                 DropdownMenuItem(value: 0,child: Text('----'),),
@@ -608,7 +608,7 @@ class _MyhomeState extends State<Myhome> {
                                 });
                               },
                             ),
-                            Text(nodoAux.nombre),]
+                            Text(nodoAux.codigo),]
                       ),
                     ],
                   ),
@@ -803,7 +803,7 @@ class _MyhomeState extends State<Myhome> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text(e.nombre),
+                        Text(e.codigo),
                         DropdownButton(
                           items: const [
                             DropdownMenuItem(value: 0,child: Text('----'),),
@@ -822,7 +822,7 @@ class _MyhomeState extends State<Myhome> {
                             });
                           },
                         ),
-                        Text(nodoAux.nombre),]
+                        Text(nodoAux.codigo),]
                   ),
                 ],
               ),
@@ -1030,7 +1030,7 @@ class _MyhomeState extends State<Myhome> {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('${modeloGuardado[index].Nombre}'),
+                                    Text('${modeloGuardado[index].Codigo}'),
                                     Text('Lineas: ${modeloGuardado[index].cantidadLineas}'),
                                     Text('Nodos: ${modeloGuardado[index].cantidadNodos}'),
                                     Text('Descripción:'),

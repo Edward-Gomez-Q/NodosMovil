@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'modelos.dart';
 class matriz extends StatefulWidget {
-  final List<List<int>> matrizAdyacencia;
+  final List<List<String>> matrizAdyacencia;
   const matriz(this.matrizAdyacencia, {Key? key}) : super(key: key);
   @override
   State<matriz> createState() => _matrizState(matrizAdyacencia);
 }
 
 class _matrizState extends State<matriz> {
-  final List<List<int>> matrizAdyacencia;
+  final List<List<String>> matrizAdyacencia;
   _matrizState( this.matrizAdyacencia);
   @override
   Widget build(BuildContext context) {
