@@ -7,6 +7,7 @@ class Nodos extends CustomPainter{
   //lista del nodos que recibimos del home.dart
   List<ModeloNodo>vNodo;
   //Función que configura la posición de los mensajes
+  //hola a todos xd
   _msg(double x, double y,  String msg, Canvas canvas){
     TextSpan span = TextSpan(style: TextStyle(color: Colors.black,fontSize: 25, fontWeight:FontWeight.bold), text: msg);
     TextPainter tp = TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
