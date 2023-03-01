@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:grafo1/HelpScreen.dart';
 import 'package:grafo1/SqlLite/sql.dart';
 import 'modelos.dart';
@@ -585,6 +586,8 @@ class _MyhomeState extends State<Myhome> {
                         keyboardType: TextInputType.number,
                         //valor numerico almacenado en receptorMensaje
                         controller: receptorMensaje,
+                        
+                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
                       ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -677,6 +680,7 @@ class _MyhomeState extends State<Myhome> {
                   keyboardType: TextInputType.number,
                   //valor numerico almacenado en receptorMensaje
                   controller: receptorMensaje,
+                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
                 ),
               ],
             ),
@@ -751,6 +755,9 @@ class _MyhomeState extends State<Myhome> {
               keyboardType: TextInputType.number,
               //valor numerico almacenado en receptorMensaje
               controller: receptorMensaje,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              ],
             ),
 
             actions: [
@@ -758,6 +765,17 @@ class _MyhomeState extends State<Myhome> {
               TextButton(
                   onPressed: (){
                     //cambia el valor de la conexión por el nuevo valor
+                    // String inputValue = receptorMensaje.text;
+                    // if(int.tryParse(inputValue) != null){
+                    //   int out = int.parse(receptorMensaje.text);
+                    //   h.valor = out.toString();
+                    //   e.color=false;
+                    //   setState(() {
+                    //   });
+                    //   Navigator.of(context).pop();
+                    // } else{
+                    //   print('Error critico xd');
+                    // }
                     h.valor=receptorMensaje.text;
                     e.color=false;
                     setState(() {
@@ -799,6 +817,8 @@ class _MyhomeState extends State<Myhome> {
                     keyboardType: TextInputType.number,
                     //valor numerico almacenado en receptorMensaje
                     controller: receptorMensaje,
+                    
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
                   ),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -832,6 +852,7 @@ class _MyhomeState extends State<Myhome> {
                 TextButton(
                     onPressed: (){
                       //cambia el valor de la conexión por el nuevo valor
+
                       h.valor=receptorMensaje.text;
                       if(_valueLinea==0)
                       {

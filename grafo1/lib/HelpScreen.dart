@@ -46,7 +46,6 @@ class HelpScreen extends StatelessWidget {
               title: const Icon(Icons.table_view),
               subtitle: const Text('Con este boton podremos generar la matriz de adyasencia\n'),
             ),
-
             ListTile(
               title: const Icon(Icons.edit_outlined),
               subtitle: const Text('Con este boton podremos editar el nombre de los nodos\n'),
@@ -58,6 +57,10 @@ class HelpScreen extends StatelessWidget {
             ListTile(
               title: const Icon(Icons.save_as_sharp),
               subtitle: const Text('Con este boton podremos cargar diseños almacenados en la aplicación\n'),
+            ),
+            ListTile(
+              title: const Text('Integrantes'),
+              subtitle: const Text('Jurado Huarachi Alvaro Gabriel\nLandaeta Uria Alejandra Nicole\nMallea Camacho Laura Victoria\nOlivera Jimenez Cristopher Victor\nPasten Landivar Max Alejandro'),
             ),
           ],
         ),
